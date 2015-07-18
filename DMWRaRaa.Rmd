@@ -1,0 +1,23 @@
+*Data Mining with Rattle and R: The Art of Excavating Data for Knowledge Discovery* by Graham Williams, 
+
+# Appendix A: Installing Rattle
+
+**Rattle** relies on an extensive collection of free and open source software. Some preliminary steps need to be followed in installing it. The latest installation instructions are maintained at http://rattle.togaware.com. The instructions cover **Rattle** on GNU/Linux, Microsoft Windows and MacOS/X.
+
+Rattle is distributed as a freely available open source R package available from CRAN, the Comprehensive R Archive Network (http://cran.r-project.org/). The source code for **Rattle** is available from Google Code (http://code.google.com/p/rattle/). A discussion mailing list is available from Google Groups (http://groups.google.com/group/rattle-users).
+
+If you are setting up a new data mining platform, the recommended approach is to build it on top of the Ubuntu operating system (http://ubuntu.com). This delivers a free and open source environment for data mining.
+
+If you already have R installed and have installed the appropriate GTK libraries for your operating system, then installing **Rattle** is as simple as:
+
+    install.packages("rattle")
+
+```{r comment=NA}
+library(rattle)
+```
+
+Once installed, the function **rattleInfo()** provides version information for rattle and dependencies and will also check for available updates and generate the command that can be cut-and-pasted to update the appropriate packages:
+
+```{r comment=NA}
+rattleInfo()
+```
