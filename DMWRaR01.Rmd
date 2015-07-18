@@ -12,8 +12,7 @@ Data mining has been applied in most areas of endeavor. There are data mining te
 
 We are living in a time where data is collected and stored in unprecedented volumes. Large and small government agencies, commercial enterprises, and noncommercial organizations collect data about their businesses, customers, human resources, products, manufacturing processes, suppliers, business partners, local and international markets, and competitors. Data is the fuel that we inject into the data mining engine. 
 
-Turning data into information and then turning that information into knowledge remains a key factor for “success.” Data contains valuable information that can support managers in their business decisions to effectively and efficiently run a business. Amongst data there can be hidden clues of the fraudulent activity of criminals. Data provides the basis for understanding the scientific processes that we observe in our world. Turning data into information is the basis for identifying new opportunities that lead to the discovery of new knowledge, which is the
-linchpin of our society!
+Turning data into information and then turning that information into knowledge remains a key factor for “success.” Data contains valuable information that can support managers in their business decisions to effectively and efficiently run a business. Amongst data there can be hidden clues of the fraudulent activity of criminals. Data provides the basis for understanding the scientific processes that we observe in our world. Turning data into information is the basis for identifying new opportunities that lead to the discovery of new knowledge, which is the linchpin of our society!
 
 Data mining is about building models from data. We build models to gain insights into the world and how the world works so we can predict how things behave. A data miner, in building models, deploys many different data analysis and model building techniques. Our choices depend on the business problems to be solved. Although data mining is not the only approach, it is becoming very widely used because it is well suited to the data environments we find in today’s enterprises. This is characterized by the volume of data available, commonly in the gigabytes and terabytes and fast approaching the petabytes. It is also characterized by the complexity of that data, both in terms of the relationships that are awaiting discovery in the data and the data types available today, including text, image, audio, and video. The business environments are also rapidly changing, and analyses need to be performed regularly and models updated regularly to keep up with today’s dynamic world.
 
@@ -117,7 +116,7 @@ My list of insights for data mining, in no particular order, includes:
 
 8. Communicate discoveries effectively and visually.
 
-1.7 Documenting Data Mining
+## 1.7 Documenting Data Mining
 
 An important task while data mining is the recording of the process. We need to be vigilant to record all that is done. This is often best done through the code we write to perform the analysis rather than having to document the process separately. Having a separate process to document the data mining will often mean that it is rarely completed. An implication of this is that we often capture the process as transparent, executable code rather than as a list of instructions for using a GUI.
 
