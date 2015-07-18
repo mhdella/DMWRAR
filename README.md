@@ -21,5 +21,5 @@ by Graham Williams
 14 Support Vector Machines  
 15 Model Performance Evaluation  
 16 Deployment  
-A Installing Rattle
+A Installing Rattle  
 B Sample Datasets  
