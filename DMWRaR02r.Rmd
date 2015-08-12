@@ -1,6 +1,23 @@
-Data Mining with Rattle and R: The Art of Excavating Data for Knowledge Discovery Graham Williams
+---
+title: "DMwRaR02r"
+author: "Robert A. Stevens"
+date: "August 7, 2015"
+output: html_document
+---
+
+*Data Mining with Rattle and R: The Art of Excavating Data for Knowledge Discovery* by Graham Williams
 
 # Chapter 2: Getting Started
+
+```{r comment=NA}
+# load required packages
+library(rattle)
+library(colorspace) # used to generate the colours used in plots, if available
+library(rpart) # provides the 'rpart' function
+library(gplots) # provides the 'barplot2' function
+library(ggplot2) # provides the 'ggplot' function
+library(dplyr) # provides the 'select' function
+```
 
 New ideas are often most effectively understood and appreciated by actually doing something with them. So it is with data mining. Fundamentally, data mining is about practical application — application of the algorithms developed by researchers in artificial intelligence, machine learning, computer science, and statistics. This chapter is about getting started with data mining.
 
@@ -23,7 +40,6 @@ The Microsoft Windows R Console provides additional menus specifically for worki
 We start Rattle by loading rattle into the R library using library(). We supply the name of the package to load as the argument to the command. The rattle() command is then entered with an empty argument list, as shown below. We will then see the Rattle GUI displayed, as in Figure 2.2.
 
 ```{r comment=NA}
-library(rattle)
 rattle()
 ```
 
@@ -68,113 +84,6 @@ This will change the contents of Rattle’s main window to display options and i
 
 4. Click on the Execute button.
 
-```{r comment=NA}
-# Rattle is Copyright (c) 2006-2014 Togaware Pty Ltd.
-
-#============================================================
-# Rattle timestamp: 2015-08-06 16:30:02 x86_64-apple-darwin10.8.0 
-
-# Rattle version 3.4.1 user 'rebeccastevens'
-
-# Export this log textview to a file using the Export button or the Tools 
-# menu to save a log of all activity. This facilitates repeatability. Exporting 
-# to file 'myrf01.R', for example, allows us to the type in the R Console 
-# the command source('myrf01.R') to repeat the process automatically. 
-# Generally, we may want to edit the file to suit our needs. We can also directly 
-# edit this current log textview to record additional information before exporting. 
- 
-# Saving and loading projects also retains this log.
-
-library(rattle)
-
-# This log generally records the process of building a model. However, with very 
-# little effort the log can be used to score a new dataset. The logical variable 
-# 'building' is used to toggle between generating transformations, as when building 
-# a model, and simply using the transformations, as when scoring a dataset.
-
-building <- TRUE
-scoring  <- ! building
-
-# The colorspace package is used to generate the colours used in plots, if available.
-
-library(colorspace)
-
-# A pre-defined value is used to reset the random seed so that results are repeatable.
-
-crv$seed <- 42 
-
-#============================================================
-# Rattle timestamp: 2015-08-06 16:30:57 x86_64-apple-darwin10.8.0 
-
-# Load the data.
-
-crs$dataset <- read.csv(system.file("csv", "weather.csv", package="rattle"), encoding = "UTF-8")
-
-#============================================================
-# Rattle timestamp: 2015-08-06 16:30:57 x86_64-apple-darwin10.8.0 
-
-# Note the user selections. 
-
-# Build the training/validate/test datasets.
-
-set.seed(crv$seed) 
-crs$nobs <- nrow(crs$dataset) # 366 observations 
-crs$sample <- crs$train <- sample(nrow(crs$dataset), 0.7*crs$nobs) # 256 observations
-crs$validate <- sample(setdiff(seq_len(nrow(crs$dataset)), crs$train), 0.15*crs$nobs) # 54 observations
-crs$test <- setdiff(setdiff(seq_len(nrow(crs$dataset)), crs$train), crs$validate) # 56 observations
-
-# The following variable selections have been noted.
-
-crs$input <- c("MinTemp", "MaxTemp", "Rainfall", "Evaporation",
-     "Sunshine", "WindGustDir", "WindGustSpeed", "WindDir9am",
-     "WindDir3pm", "WindSpeed9am", "WindSpeed3pm", "Humidity9am",
-     "Humidity3pm", "Pressure9am", "Pressure3pm", "Cloud9am",
-     "Cloud3pm", "Temp9am", "Temp3pm", "RainToday")
-
-crs$numeric <- c("MinTemp", "MaxTemp", "Rainfall", "Evaporation",
-     "Sunshine", "WindGustSpeed", "WindSpeed9am", "WindSpeed3pm",
-     "Humidity9am", "Humidity3pm", "Pressure9am", "Pressure3pm",
-     "Cloud9am", "Cloud3pm", "Temp9am", "Temp3pm")
-
-crs$categoric <- c("WindGustDir", "WindDir9am", "WindDir3pm", "RainToday")
-
-crs$target  <- "RainTomorrow"
-crs$risk    <- "RISK_MM"
-crs$ident   <- "Date"
-crs$ignore  <- "Location"
-crs$weights <- NULL
-
-#============================================================
-# Rattle timestamp: 2015-08-06 16:31:44 x86_64-apple-darwin10.8.0 
-
-# Decision Tree 
-
-# The 'rpart' package provides the 'rpart' function.
-
-require(rpart, quietly = TRUE)
-
-# Reset the random number seed to obtain the same results each time.
-
-set.seed(crv$seed)
-
-# Build the Decision Tree model.
-
-crs$rpart <- rpart(RainTomorrow ~ .,
-    data=crs$dataset[crs$train, c(crs$input, crs$target)],
-    method="class",
-    parms=list(split="information"),
-    control=rpart.control(usesurrogate=0, 
-        maxsurrogate=0))
-
-# Generate a textual view of the Decision Tree model.
-
-print(crs$rpart)
-printcp(crs$rpart)
-cat("\n")
-
-# Time taken: 0.04 secs
-```
-
 Once we have specified what we want done, we ask Rattle to do it by clicking the Execute button. For simple model builders for small datasets, Rattle will only take a second or two before we see the results displayed in the text view window.
 
 The resulting decision tree model, displayed textually in Rattle’s text view, is based on a sample dataset of historic daily weather observations (the curious can skip a few pages ahead to see the actual decision tree in Figure 2.5 on page 30).
@@ -193,6 +102,13 @@ If we have followed the four steps in Section 2.3, then we will now need to rese
 
 On starting Rattle, we can, without any other action, click the Execute button in the toolbar. Rattle will notice that no CSV file (the default data format) has been specified (notice the “(None)” in the Filename: chooser) and will ask whether we wish to use one of the sample datasets supplied with the package. Click on Yes to do so, to see the data listed, as shown in Figure 2.3.
 
+```{r comment=NA}
+# Load the data
+crs$dataset <- read.csv(system.file("csv", "weather.csv", package = "rattle"), 
+                        encoding = "UTF-8")
+str(crs$dataset)
+```
+
 **Figure 2.3: The sample weather.csv file has been loaded into memory as a dataset ready for mining. The dataset consists of 366 observations and 24 variables, as noted in the status bar. The first variable has a role other than the default Input role. Rattle uses heuristics to initialize the roles.**
 
 The file weather.csv will be loaded by default into Rattle as its dataset. Within R, a dataset is actually known as a data frame, and we will see this terminology frequently.
@@ -209,24 +125,76 @@ The textual presentation of the model in Figure 2.4 takes a little effort to und
 
 Clicking the Rules button will display a list of rules that are derived directly from the decision tree (we’ll need to scroll the panel contained in the Model tab to see them). This is yet another way to represent the same model. The rules are listed here, and we explain them in detail next.
 
+```{r comment=NA}
+# Decision Tree 
+
+# The logical variable 'building' is used to toggle between generating transformations, 
+# as when building a model, and simply using the transformations, as when scoring a dataset.
+building <- TRUE
+scoring  <- !building
+
+# Note the user selections. 
+
+# Build the training/validate/test datasets.
+crs$nobs <- nrow(crs$dataset) 
+crs$nobs # 366 observations
+crs$sample <- crs$train <- sample(nrow(crs$dataset), 0.7*crs$nobs) 
+length(crs$sample) # 256 observations
+crs$validate <- sample(setdiff(seq_len(nrow(crs$dataset)), crs$train), 0.15*crs$nobs) 
+length(crs$validate) # 54 observations
+crs$test <- setdiff(setdiff(seq_len(nrow(crs$dataset)), crs$train), crs$validate)
+length(crs$test) # 56 observations
+
+# The following variable selections have been noted.
+crs$input <- c("MinTemp", "MaxTemp", "Rainfall", "Evaporation",
+               "Sunshine", "WindGustDir", "WindGustSpeed", "WindDir9am",
+               "WindDir3pm", "WindSpeed9am", "WindSpeed3pm", "Humidity9am",
+               "Humidity3pm", "Pressure9am", "Pressure3pm", "Cloud9am",
+               "Cloud3pm", "Temp9am", "Temp3pm", "RainToday")
+crs$numeric <- c("MinTemp", "MaxTemp", "Rainfall", "Evaporation",
+                 "Sunshine", "WindGustSpeed", "WindSpeed9am", "WindSpeed3pm",
+                 "Humidity9am", "Humidity3pm", "Pressure9am", "Pressure3pm",
+                 "Cloud9am", "Cloud3pm", "Temp9am", "Temp3pm")
+crs$categoric <- c("WindGustDir", "WindDir9am", "WindDir3pm", "RainToday")
+crs$target  <- "RainTomorrow"
+crs$risk    <- "RISK_MM"
+crs$ident   <- "Date"
+crs$ignore  <- "Location"
+crs$weights <- NULL
+
+# A pre-defined value is used to reset the random seed so that results are repeatable.
+crv$seed <- 42 
+# Reset the random number seed to obtain the same results each time.
+set.seed(crv$seed)
+
+# Build the Decision Tree model.
+crs$rpart <- rpart(RainTomorrow ~ .,
+    data = crs$dataset[crs$train, c(crs$input, crs$target)],
+    method = "class",
+    parms = list(split = "information"),
+    control = rpart.control(usesurrogate = 0, maxsurrogate = 0))
+
+# Generate a textual view of the Decision Tree model.
+print(crs$rpart)
+printcp(crs$rpart)
+```
+
 **Figure 2.4: The weather dataset has been loaded, and a decision tree model has been built.**
 
-Rule number: 7 [RainTomorrow=Yes cover=27 (11%) prob=0.74]
-  Pressure3pm< 1012
-  Sunshine< 8.85
-Rule number: 5 [RainTomorrow=Yes cover=9 (4%) prob=0.67]
-  Pressure3pm>=1012
-  Cloud3pm>=7.5
-Rule number: 6 [RainTomorrow=No cover=25 (10%) prob=0.20]
-  Pressure3pm< 1012
-  Sunshine>=8.85
-Rule number: 4 [RainTomorrow=No cover=195 (76%) prob=0.05]
-  Pressure3pm>=1012
-  Cloud3pm< 7.5
+```{r comment=NA}
+# List the rules from the tree using a Rattle support function.
+asRules(crs$rpart)
+```
 
 A well-recognized advantage of the decision tree representation for a model is that the paths through the decision tree can be interpreted as a collection of rules, as above. The rules are perhaps the more readable representation of the model. They are listed in the order of the probability (prob) that we see listed with each rule. The interpretation of the probability will be explained in more detail in Chapter 11, but we provide an intuitive reading here.
 
-**Figure 2.5: The decision tree built“out of the box”with Rattle. We traverse the tree by following the branches corresponding to the tests at each node. The > =< notation on the root (top) node indicates that we travel left if Pressure3pm is greater than 1011.9 and down the right branch if it is less than or equal to 1011.9. The <= > is similar, but reversed. The leaf nodes include a node number for reference, a decision of No or Yes to indicate whether it will RainTomorrow, the number of training observations, and the strength or confidence of the decision.**
+```{r comment=NA}
+# Plot the resulting Decision Tree. 
+# We use the rpart.plot package.
+fancyRpartPlot(crs$rpart, main = "Decision Tree weather.csv $ RainTomorrow")
+```
+
+**Figure 2.5: The decision tree built "out of the box" with Rattle. We traverse the tree by following the branches corresponding to the tests at each node. The > =< notation on the root (top) node indicates that we travel left if Pressure3pm is greater than 1011.9 and down the right branch if it is less than or equal to 1011.9. The <= > is similar, but reversed. The leaf nodes include a node number for reference, a decision of No or Yes to indicate whether it will RainTomorrow, the number of training observations, and the strength or confidence of the decision.**
 
 Rule number 7 (which also corresponds to the “7)” in Figure 2.4 and leaf node number 7 in Figure 2.5) is the strongest rule predicting rain (having the highest probability for a Yes). We can read it as saying that if the atmospheric pressure (reduced to mean sea level) at 3 pm was less than 1012 hectopascals and the amount of sunshine today was less than 8.85 hours, then it seems there is a 74% chance of rain tomorrow (yval = yes and prob = 0.74). That is to say that on most days when we have previously seen these conditions (as represented in the data) it has rained the following day.
 
@@ -243,6 +211,27 @@ Rattle’s Explore tab provides access to some common plots as well as extensive
 One of the first things we might want to know is how the values of the target variable (RainTomorrow) are distributed. A histogram might be useful for this. The simplest way to create one is to go to the Data tab, click on the Input role for RainTomorrow, and click the Execute button. Then go to the Explore tab, choose the Distributions option, and then select Bar Plot for RainTomorrow. The plot of Figure 2.6 will be shown.
 
 We can see from Figure 2.6 that the target variable is highly skewed. More than 80% of the days have no rain. This is typical of data mining, where even greater skewness is not uncommon. We need to be aware of the skewness, for example, in evaluating any models we build—a model that simply predicts that it never rains is going to be over 80% accurate, but pretty useless.
+
+```{r comment=NA}
+# Bar Plot 
+
+# Generate the summary data for plotting.
+ds <- rbind(summary(na.omit(crs$dataset[crs$sample, ]$RainTomorrow)))
+
+# Sort the entries.
+ord <- order(ds[1,], decreasing=TRUE)
+
+# Plot the data.
+bp <-  barplot2(ds[ ,ord], beside = TRUE, ylab = "Frequency", xlab = "RainTomorrow", 
+                ylim = c(0, 258), col = colorspace::rainbow_hcl(1))
+
+# Add the actual frequencies.
+text(bp, ds[ , ord] + 9, ds[ , ord])
+
+# Add a title to the plot.
+title(main = "Distribution of RainTomorrow (sample)",
+      sub = paste("Rattle", format(Sys.time(), "%Y-%b-%d %H:%M:%S"), Sys.info()["user"]))
+```
 
 **Figure 2.6: The target variable, RainTomorrow, is skewed, with Yes being quite underrepresented.**
 
@@ -268,11 +257,119 @@ These plots are useful in understanding the distribution of the numeric data. Ra
 
 The top plot of Figure 2.9 shows a very simple bar chart, with bars corresponding to each of the levels (or values) of the categoric variable of interest (WindDir9am). The bar chart has been sorted from the overall most frequent to the overall least frequent categoric value. We note that each value of the variable (e.g., the value “SE,” representing a wind direction of southeast) has three bars. The first bar is the overall frequency (i.e., the number of days) for which the wind direction at 9 am was from the southeast. The second and third bars show the breakdown for the values across the respective values of the categoric target variable (i.e., for No and Yes). We can see that the distribution within each wind direction differs between the three groups, some more than others. Recall that the three groups correspond to all observations (All), observations where it did not rain on the following day (No), and observations where it did (Yes).
 
+```{r comment=NA}
+# Box Plot 
+
+# Box Plot for MinTemp
+p <- ggplot(with(crs, dataset[sample,]), aes(y=MinTemp))
+p <- p + geom_boxplot(aes(x="All"), notch=TRUE, fill="grey")
+p <- p + stat_summary(aes(x="All"), fun.y=mean, geom="point", shape=8)
+p <- p + geom_boxplot(aes(x=RainTomorrow, fill=RainTomorrow), notch=TRUE)
+p <- p + stat_summary(aes(x=RainTomorrow), fun.y=mean, geom="point", shape=8)
+p <- p + xlab("RainTomorrow\n\nRattle 2015-Aug-07 22:04:26 rebeccastevens")
+p <- p + ggtitle("Distribution of MinTemp (sample)\nby RainTomorrow")
+p <- p + theme(legend.position="none")
+print(p)
+
+# Histogram Plot for MinTemp
+ar <- range(with(crs, select(dataset[sample,], MinTemp)))
+bw <- (ar[2]-ar[1])/nclass.FD(with(crs, dataset[sample,]$MinTemp))
+p  <- ggplot(with(crs, select(dataset[sample,], MinTemp, RainTomorrow)), aes(x=MinTemp)) +
+      geom_histogram(aes(y=..density..), binwidth=bw, fill="grey", colour="black") +
+      geom_density(aes(colour=RainTomorrow)) +
+      xlab("MinTemp\n\nRattle 2015-Aug-07 22:04:27 rebeccastevens") +
+      ggtitle("Distribution of MinTemp (sample)\nby RainTomorrow") +
+      labs(colour="", y="Density")
+print(p)
+
+# Box Plot for Sunshine
+p <- ggplot(with(crs, dataset[sample,]), aes(y=Sunshine))
+p <- p + geom_boxplot(aes(x="All"), notch=TRUE, fill="grey")
+p <- p + stat_summary(aes(x="All"), fun.y=mean, geom="point", shape=8)
+p <- p + geom_boxplot(aes(x=RainTomorrow, fill=RainTomorrow), notch=TRUE)
+p <- p + stat_summary(aes(x=RainTomorrow), fun.y=mean, geom="point", shape=8)
+p <- p + xlab("RainTomorrow\n\nRattle 2015-Aug-07 22:09:13 rebeccastevens")
+p <- p + ggtitle("Distribution of Sunshine (sample)\nby RainTomorrow")
+p <- p + theme(legend.position="none")
+print(p)
+
+# Histogram Plot for Sunshine
+ar <- range(with(crs, select(dataset[sample,], Sunshine)))
+bw <- (ar[2]-ar[1])/nclass.FD(with(crs, dataset[sample,]$Sunshine))
+p  <- ggplot(with(crs, select(dataset[sample,], Sunshine, RainTomorrow)), aes(x=Sunshine)) +
+      geom_histogram(aes(y=..density..), binwidth=bw, fill="grey", colour="black") +
+      geom_density(aes(colour=RainTomorrow)) +
+      xlab("Sunshine\n\nRattle 2015-Aug-07 22:09:13 rebeccastevens") +
+      ggtitle("Distribution of Sunshine (sample)\nby RainTomorrow") +
+      labs(colour="", y="Density")
+print(p)
+```
+
 **Figure 2.8: A sample of distribution plots for two variables.**
 
 The lower two plots show essentially the same information, in different forms. The bottom left plot is a dot plot. It is similar to the bar chart, on its side, and with dots representing the “top” of the bars. The breakdown into the levels of the target variable is compactly shown as dots within the same row.
 
 The bottom right plot is a mosaic plot, with all bars having the same height. The relative frequencies between the values of WindDir9am are now indicated by the widths of the bars. Thus, SE is the widest bar, and WSW is the thinnest. The proportion between No and Yes within each bar is clearly shown.
+
+```{r comment=NA}
+# Bar Plot 
+
+# Generate the summary data for plotting.
+ds <- rbind(summary(na.omit(crs$dataset[crs$sample, ]$WindDir9am)),
+            summary(na.omit(crs$dataset[crs$sample, ]
+                            [crs$dataset[crs$sample, ]$RainTomorrow=="No",]$WindDir9am)),
+            summary(na.omit(crs$dataset[crs$sample,]
+                            [crs$dataset[crs$sample,]$RainTomorrow=="Yes",]$WindDir9am)))
+
+# Sort the entries.
+ord <- order(ds[1, ], decreasing = TRUE)
+
+# Plot the data.
+bp <-  barplot2(ds[ ,ord], beside = TRUE, ylab = "Frequency", xlab = "WindDir9am", 
+                ylim = c(0, 40), col = colorspace::rainbow_hcl(3))
+
+# Add a legend to the plot.
+legend("topright", bty = "n", c("All", "No", "Yes"),  fill = colorspace::rainbow_hcl(3))
+
+# Add a title to the plot.
+title(main = "Distribution of WindDir9am (sample)\nby RainTomorrow",
+      sub = paste("Rattle", format(Sys.time(), "%Y-%b-%d %H:%M:%S"), Sys.info()["user"]))
+
+# Dot Plot 
+
+# Generate the summary data for the plot.
+ds <- rbind(summary(na.omit(crs$dataset[crs$sample,]$WindDir9am)),
+            summary(na.omit(crs$dataset[crs$sample,]
+                            [crs$dataset[crs$sample,]$RainTomorrow=="No",]$WindDir9am)),
+            summary(na.omit(crs$dataset[crs$sample,]
+                            [crs$dataset[crs$sample,]$RainTomorrow=="Yes",]$WindDir9am)))
+
+# Sort the entries.
+ord <- order(ds[1, ], decreasing = TRUE)
+
+# Plot the data.
+dotchart(ds[nrow(ds):1, ord], main = "Distribution of WindDir9am (sample)\nby RainTomorrow",
+         sub = "Rattle 2015-Aug-07 22:14:44 rebeccastevens", 
+         col = rev(colorspace::rainbow_hcl(3)), labels = "", 
+         xlab = "Frequency", ylab = "WindDir9am", pch = c(1:2, 19))
+
+# Add a legend.
+legend("bottomright", bty = "n", c("All", "No", "Yes"), col = colorspace::rainbow_hcl(3),
+       pch = c(19, 2:1))
+
+# Mosaic Plot 
+# Generate the table data for plotting.
+ds <- table(crs$dataset[crs$sample,]$WindDir9am, crs$dataset[crs$sample,]$RainTomorrow)
+
+# Sort the entries.
+ord <- order(apply(ds, 1, sum), decreasing=TRUE)
+
+# Plot the data.
+mosaicplot(ds[ord, ], main = "Mosaic of WindDir9am (sample) by RainTomorrow", 
+           sub = "Rattle 2015-Aug-07 22:14:44 rebeccastevens", 
+           color = colorspace::rainbow_hcl(3)[-1], cex = 0.7, 
+           xlab = "WindDir9am", ylab = "RainTomorrow")
+```
 
 **Figure 2.9: A sample of the three distribution plots for the one categoric variable.**
 
@@ -296,6 +393,68 @@ The testing dataset and, while we are building models, the validation dataset, a
 
 Figure 2.10 shows the Evaluate tab with the Error Matrix (confusion matrix) using the Testing dataset for the Tree model that we have previously seen in Figures 2.4 and 2.5. Two tables are presented. The first lists the actual counts of observations and the second the percentages. We can observe that for 62% of the predictions the model correctly predicts that it won’t rain (called the true negatives). That is, 35 days out of the 56 days are correctly predicted as not raining. Similarly, we see the model correctly predicts rain (called the true positives) on 18% of the days.
 
+```{r comment=NA}
+#============================================================
+# Rattle timestamp: 2015-08-07 22:14:44 x86_64-apple-darwin10.8.0 
+
+# Mosaic Plot 
+
+# Generate the table data for plotting.
+
+ds <- table(crs$dataset[crs$sample,]$WindDir9am, crs$dataset[crs$sample,]$RainTomorrow)
+
+# Sort the entries.
+
+ord <- order(apply(ds, 1, sum), decreasing=TRUE)
+
+# Plot the data.
+
+mosaicplot(ds[ord,], main="Mosaic of WindDir9am (sample)
+by RainTomorrow", sub="Rattle 2015-Aug-07 22:14:44 rebeccastevens", color=colorspace::rainbow_hcl(3)[-1], cex=0.7, xlab="WindDir9am", ylab="RainTomorrow")
+
+#============================================================
+# Rattle timestamp: 2015-08-07 22:23:57 x86_64-apple-darwin10.8.0 
+
+# Evaluate model performance. 
+
+# Generate an Error Matrix for the Decision Tree model.
+
+# Obtain the response from the Decision Tree model.
+
+crs$pr <- predict(crs$rpart, newdata=crs$dataset[crs$test, c(crs$input, crs$target)], type="class")
+
+# Generate the confusion matrix showing counts.
+
+table(crs$dataset[crs$test, c(crs$input, crs$target)]$RainTomorrow, crs$pr,
+        dnn=c("Actual", "Predicted"))
+
+# Generate the confusion matrix showing proportions.
+
+pcme <- function(actual, cl)
+{
+  x <- table(actual, cl)
+  tbl <- cbind(round(x/length(actual), 2),
+               Error=round(c(x[1,2]/sum(x[1,]),
+                             x[2,1]/sum(x[2,])), 2))
+  names(attr(tbl, "dimnames")) <- c("Actual", "Predicted")
+  return(tbl)
+};
+pcme(crs$dataset[crs$test, c(crs$input, crs$target)]$RainTomorrow, crs$pr)
+
+# Calculate the overall error percentage.
+
+overall <- function(x)
+{
+  if (nrow(x) == 2) 
+    cat((x[1,2] + x[2,1]) / sum(x)) 
+  else
+    cat(1 - (x[1,rownames(x)]) / sum(x))
+} 
+overall(table(crs$pr, crs$dataset[crs$test, c(crs$input, crs$target)]$RainTomorrow,  
+        dnn=c("Predicted", "Actual")))
+
+```
+
 **Figure 2.10: A confusion matrix applying the model to the testing dataset is displayed.**
 
 In terms of how correct the model is, we observe that it correctly predicts rain for 10 days out of the 15 days on which it actually does rain. This is a 67% accuracy in predicting rain. We call this the true positive rate, but it is also known as the recall and the sensitivity of the model. Similarly, the true negative rate (also called the specificity of the model) is 85%.
@@ -305,6 +464,9 @@ We also see six days when we are expecting rain and none occurs (called the fals
 The performance measure here tells us that we are going to get wet more often than we would like. This is an important issue—the fact that the different types of errors have different consequences for us. We’ll also see more about this in Chapter 15.
 
 It is useful to compare the performance as measured using the validation and testing datasets with the performance as measured using the training dataset. To do so, we can select the Validation and then the Training options (and for completeness the Full option) from the Data line of the Evaluate tab and then Execute each. The resulting performance will be reported. We reproduce all four here for comparison, including the count and the percentages.
+
+```{r comment=NA}
+```
 
 Evaluation Using the Training Dataset:
 Count Predict No Yes Actual No 205 10 Yes 15 26
@@ -407,25 +569,28 @@ Generally we instruct R to evaluate functions—a technical term used to describ
 
 We saw in Section 2.1 two function calls, which we repeat below. The first was a call to the function library(), where we asked R to load rattle. We then started up Rattle with a call to the rattle() function:
 
-> library(rattle)
-> rattle()
+    > library(rattle)
+    > rattle()
 
 Irrespective of the purpose of the function, for each function call we usually supply arguments that refine the behavior of the function. We did that above in the call to library(), where the argument was rattle. Another simple example is to call dim() (dimensions) with the argument weather.
 
-> dim(weather)
-[1] 366 24
+```{r comment=NA}
+dim(weather)
+```
 
 Here, weather is an object name. We can think of it simply as a reference to some object (something that contains data). The object in this case is the weather dataset as used in this chapter. It is organized as rows and columns. The dim() function reports the number of rows and columns.
 
 If we type a name (e.g., either weather or dim) at the R prompt, R will respond by showing us the object. Typing weather (followed by pressing the Enter key) will result in the actual data. We will see all 366 rows of data scrolled on the screen. If we type dim and press Enter, we will see the definition of the function (which in this case is a primitive function coded into the core of R):
 
-> dim
-function (x)  .Primitive("dim")
+```{r comment=NA}
+dim
+```
 
 A common mistake made by new users is to type a function name by itself (without arguments) and end up a little confused about the resulting output. To actually invoke the function, we need to supply the argument list, which may be an empty list. Thus, at a minimum, we add () to the function call on the command line:
 
-> dim()
-Error in dim: 0 arguments passed to 'dim' which requires 1
+```{r comment=NA, error=FALSE}
+dim()
+```
 
 As we see, executing this function will generate an error message. We note that dim() actually needs one argument, and no arguments were passed to it. Some functions can be invoked with no arguments, as is the case for rattle().
 
@@ -433,88 +598,66 @@ The examples above illustrate how we will show our interaction with R. The “> 
 
 Technically, dim() returns a vector (a sequence of elements or values) of length 2. The [1] simply tells us that the first number we see from the vector (the 366) is the first element of the vector. The second element is 24.
 
-The two numbers listed by R in the example above (i.e., the vector returned by dim()) are the number of rows and columns, respectively, in the weather dataset—that is, its dimensions.
+The two numbers listed by R in the example above (i.e., the vector returned by dim()) are the number of rows and columns, respectively, in the weather dataset — that is, its dimensions.
 
 For very long vectors, the list of the elements of the vector will be wrapped to fit across the screen, and each line will start with a number within square brackets to indicate what element of the vector we are up to. We can illustrate this with seq(), which generates a sequence of numbers:
 
-> seq(1, 50)
-[1] 1 2 3 4 5 6 7 8 9101112131415161718 [19] 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 [37] 37 38 39 40 41 42 43 44 45 46 47 48 49 50
+```{r comment=NA}
+seq(1, 50)
+```
 
 We saw above that we can view the actual data stored in an object by typing the name of the object (weather) at the command prompt. Generally this will print too many lines (although only 366 in the case of the weather dataset). A useful pair of functions for inspecting our data are head() and tail(). These will list just the top and bottom six observations (or rows of data), by default, from the data frame, based on the order in which they appear there. Here we request, through the arguments to the function, to list the top two observations (and we also use indexing, described shortly, to list only the first nine variables):
 
-> head(weather[1:9], 2)
-        Date Location MinTemp MaxTemp Rainfall
-1 2007-11-01 Canberra       8    24.3      0.0
-2 2007-11-02 Canberra      14    26.9      3.6
-  Evaporation Sunshine WindGustDir WindGustSpeed
-1         3.4      6.3          NW            30
-2         4.4      9.7         ENE            39
+```{r comment=NA}
+head(weather[1:9], 2)
+```
 
 Similarly, we can request the bottom three rows of the dataset.
 
-> tail(weather[1:9], 3)
-          Date Location MinTemp MaxTemp Rainfall
-364 2008-10-29 Canberra
-365 2008-10-30 Canberra
-366 2008-10-31 Canberra
-12.5    19.9        0
-12.5    26.9        0
-12.3    30.2        0
-    Evaporation Sunshine WindGustDir WindGustSpeed
-364         8.4      5.3         ESE            43
-365         5.0      7.1          NW            46
-366         6.0     12.6          NW            78
+```{r comment=NA}
+tail(weather[1:9], 3)
+```
 
 The weather dataset is more complex than the simple vectors we have seen above. In fact, it is a special kind of list called a data frame, which is one of the most common data structures in R for storing our datasets. A data frame is essentially a list of columns. The weather dataset has 24 columns. For a data frame, each column is a vector, each of the same length.
 
 If we only want to review certain rows or columns of the data frame, we can index the dataset name. Indexing simply uses square brackets to list the row numbers and column numbers that are of interest to us:
 
-> weather[4:8, 2:4]
-  Location MinTemp MaxTemp
-4 Canberra
-5 Canberra
-6 Canberra
-7 Canberra
-8 Canberra
-13.3    15.5
- 7.6    16.1
- 6.2    16.9
- 6.1    18.2
- 8.3    17.0
+```{r comment=NA}
+weather[4:8, 2:4]
+```
 
 Notice the notation for a sequence of numbers. The string 4:8 is actually equivalent to a call to seq() with two arguments, 4 and 8. The function returns a vector containing the integers from 4 to 8. It’s the same as listing them all and combining them using c():
 
-> 4:8
-[1] 4 5 6 7 8
-> seq(4, 8)
-[1] 4 5 6 7 8
-> c(4, 5, 6, 7, 8)
-[1] 4 5 6 7 8
+```{r comment=NA}
+4:8
+seq(4, 8)
+c(4, 5, 6, 7, 8)
+```
 
 ### Getting Help
 
 It is important to know how we can learn more about using R. From the command line, we obtain help on commands by calling help():
 
-> help(dim)
+    > help(dim)
 
 A shorthand is to precede the argument with a ? as in: ?dim. This is automatically converted into a call to help().
 
 The help.search() function will search the documentation to list 
 functions that may be of relevance to the topic we supply as an argument:
 
-> help.search("dimensions")
+    > help.search("dimensions")
 
 The shorthand here is to precede the string with two question marks as in ??dimensions.
 
 A third command for searching for help on a topic is RSiteSearch(). This will submit a query to the R project’s search engine on the Internet:
 
-> RSiteSearch("dimensions")
+    > RSiteSearch("dimensions")
 
 ### Quitting R
 
 Recall that to exit from R, as we saw in Section 2.1, we issue q():
 
-> q()
+    > q()
 
 Our first session with R is now complete. The command line, as we have introduced here, is where we access the full power of R. But not everyone wants to learn and remember commands, so Rattle will get us started quite quickly into data mining, with only our minimal knowledge of the command line.
 
@@ -530,17 +673,9 @@ We can then type the print() command at the prompt. We see this in the code box 
 
 After typing the full command (including the function name and arguments) we then press the Enter key. This has the effect of passing the command to R. R will respond with the text exactly as shown below. The text starts with an indication of the number of observations (256). This is followed by the same textual presentation of the model we saw in Section 2.5.
 
-> print(crs$rpart, digits=1)
-n= 256
-node), split, n, loss, yval, (yprob)
-      * denotes terminal node
-1) root 256 40 No (0.84 0.16)
-  2) Pressure3pm>=1e+03 204 20 No (0.92 0.08)
-    4) Cloud3pm< 8 195 10 No (0.95 0.05) *
-    5) Cloud3pm>=8 9  3 Yes (0.33 0.67) *
-  3) Pressure3pm< 1e+03 52 20 No (0.52 0.48)
-    6) Sunshine>=9 25  5 No (0.80 0.20) *
-    7) Sunshine< 9 27  7 Yes (0.26 0.74) *
+```{r comment=NA}
+print(crs$rpart, digits = 1)
+```
 
 ### Commands versus Functions
 
@@ -562,59 +697,55 @@ For a particular project, we will usually analyze a collection of data, possibly
 
 As a programming style, we can create a storage space and give it a name (i.e., it will look like a programming language variable) to act as a container. The container is an R environment and is initialized using new.env() (new environment). Here, we create a new environment and give it the name en:
 
-> en <- new.env()
+```{r comment=NA}
+en <- new.env()
+```
 
 The object en now acts as a single container into which we can place all the relevant information associated with the dataset and that can also be shared amongst several models. We will store and access the relevant information from this container.
 
 Data is placed into the container using the $ notation and the assign-
 ment operator, as we see in the following example:
 
-> en$obs <- 4:8
-> en$obs
-[1] 4 5 6 7 8
-> en$vars <- 2:4
-> en$vars
-[1] 2 3 4
+```{r comment=NA}
+en$obs <- 4:8
+en$obs
+en$vars <- 2:4
+en$vars
+```
 
 The variables obs and vars are now contained within the environment referenced as en.
 
 We can operate on variables within an environment without using the $ notation (which can become quite cumbersome) by wrapping the commands within evalq():
 
-> evalq( {
-    nobs <- length(obs)
-    nvars <- length(vars)
-  }, en)
-> en$nobs
-[1] 5
-> en$nvars
-[1] 3
+```{r comment=NA}
+evalq({
+  nobs <- length(obs)
+  nvars <- length(vars)
+}, en)
+en$nobs
+en$nvars
+```
 
 The use of evalq() becomes most convenient when we have more than a couple of statements to write.
 
 At any time, we can list the contents of the container using ls():
 
-> ls(en)
-[1] "nobs"  "nvars" "obs"   "vars"
+```{r comment=NA}
+ls(en)
+```
 
 Another useful function, provided by gdata (Warnes, 2011), is ll(), which provides a little more information:
 
-> library(gdata)
-> ll(en)
-        Class KB
-nobs  integer  0
-nvars integer  0
-obs   integer  0
-vars  integer  0
+```{r comment=NA}
+library(gdata)
+ll(en)
+```
 
 We can also convert the environment to a list using as.list():
 
-> as.list(en)
-$nvars [1] 3
-$nobs [1] 5
-$vars
-[1] 2 3 4
-$obs
-[1] 4 5 6 7 8
+```{r comment=NA}
+as.list(en)
+```
 
 By keeping all the data related to a project together, we can save and load the project through this one object. We also avoid “polluting” the global environment with lots of objects and losing track of what they all related to, possibly confusing ourselves and others.
 
@@ -624,43 +755,53 @@ This approach is also sympathetic to the concept of object-oriented programming.
 
 We will use this approach of encapsulating all of our data and information within a container when we start building models. The following provides the basic template:
 
-> library(rpart)
-> weatherDS <- new.env()
-> evalq({
-    data <- weather
-    nobs <- nrow(data)
-    vars <- c(2:22, 24)
-    form <- formula(RainTomorrow ~ .)
-    target <- all.vars(form)[1]
-    train <- sample(nobs, 0.7*nobs)
-  }, weatherDS)
-> weatherRPART <- new.env(parent=weatherDS)
-> evalq({
-    model <- rpart(formula=form, data=data[train, vars])
-    predictions <- predict(model, data[-train, vars])
-  }, weatherRPART)
+```{r comment=NA}
+library(rpart)
+weatherDS <- new.env()
+evalq({
+  data <- weather
+  nobs <- nrow(data)
+  vars <- c(2:22, 24)
+  form <- formula(RainTomorrow ~ .)
+  target <- all.vars(form)[1]
+  train <- sample(nobs, 0.7*nobs)
+}, weatherDS)
+weatherRPART <- new.env(parent = weatherDS)
+evalq({
+  model <- rpart(formula = form, data = data[train, vars])
+  predictions <- predict(model, data[-train, vars])
+}, weatherRPART)
+```
 
 Here we have created two containers, one for the data and the other for the model. The model container (weatherRPART) has as its parent the data container (weatherDS), which is achieved by specifying the parent= argument. This makes the variables defined in the data container available within the model container.
 
 To save a container to a file for use at a later time, or to document stages within the data mining project, use save():
 
-> save(weatherDS, file="weatherDS.Rdata")
+```{r comment=NA}
+save(weatherDS, file = "weatherDS.Rdata")
+```
 
 It can later be loaded using load():
 
-> load("weatherDS.Rdata")
+```{r comment=NA}
+load("weatherDS.Rdata")
+```
 
 It can at times become tiresome to be wrapping our code up within a container. While we retain the discipline of using containers we can also quickly interact with the variables in a container without having to specify the container each time. WE use attach and detach to add a container into the so called search path used by R to find variables. Thus we could do something like the following:
 
-> attach(weatherRPART)
-> print(model)
-> detach(weatherRPART)
+```{r comment=NA}
+attach(weatherRPART)
+print(model)
+detach(weatherRPART)
+```
 
 However, creating new variables to store within the environment will not work in the same way. Thus:
 
-> attach(weatherRPART)
-> new.model <- model
-> detach(weatherRPART)
+```{r comment=NA}
+attach(weatherRPART)
+new.model <- model
+detach(weatherRPART)
+```
 
 does not place the variable new.model into the weatherRPART environment. Instead it goes into the global environment.
 
@@ -680,6 +821,7 @@ Before proceeding, it is advisable to review Chapter 1 as an introduction to the
 
 This chapter has referenced the following R packages, commands, functions, and datasets:
 
+```{r comment=NA, echo=FALSE}
 r01 <- c("<-           ", "function", "Assign a value into a named reference.  ") 
 r02 <- c("c()          ", "function", "Concatenate values into a vector.       ")
 r03 <- c("dim()        ", "function", "Return the dimensions of a dataset.     ")
@@ -717,3 +859,4 @@ objTable <- rbind(r01, r02, r03, r04, r05, r06, r07, r08,
 colnames(objTable) <- c("Object", "Type", "Description")
 rownames(objTable) <- c(1:30)
 print(objTable, quote = FALSE)
+```
