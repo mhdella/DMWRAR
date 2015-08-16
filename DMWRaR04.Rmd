@@ -61,7 +61,7 @@ system.file("csv", "weather.csv", package = "rattle")
 
 The location reported will depend on your particular installation and operating system. Here the location is relative to a standard installation of a Ubuntu GNU/Linux system.
 
-    Tip: We can also load this file into a new instance of Rattle with just two mouse clicks (Execute and Yes). We can then click the Filename button (displaying weather.csv) to open up a file browser showing the file path at the top of the window.
+*Tip*: We can also load this file into a new instance of Rattle with just two mouse clicks (Execute and Yes). We can then click the Filename button (displaying weather.csv) to open up a file browser showing the file path at the top of the window.
 
 We can review the contents of the file using file.show(). This will pop up a window displaying the contents of the file:
 
